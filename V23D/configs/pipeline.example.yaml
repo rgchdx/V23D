@@ -1,0 +1,23 @@
+video_path: data/raw/input_video.mp4
+frames_dir: data/frames
+masks_dir: data/masks
+colmap_dir: data/colmap
+recon_dir: data/recon
+mesh_dir: data/mesh
+
+extract:
+  fps: 3.0
+  max_frames: null
+  resize: null
+  blur_threshold: 80.0
+  start_sec: 0.0
+  end_sec: null
+
+masking:
+  model: rembg
+
+sfm:
+  use_masks: true
+
+reconstruction:
+  backend: gaussian-splatting
