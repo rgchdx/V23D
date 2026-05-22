@@ -46,10 +46,13 @@ def _should_take_frame(src_index: int, src_fps: float, timestamp_sec: float, arg
     return (src_index % effective_stride) == 0
 
 
+# Frame by frame processing is used so that we can get the video timestamp for each frame that is going from the orbit video
 def main() -> None:
     args = build_argparser().parse_args()
 
     args.out.mkdir(parents=True, exist_ok=True)
+    if args.save_metadata == Path("data/frames/metadata.json"):
+        args.save_metadata = args.out / "metadata.json"
 
     cap = open_video(args.video)
     src_fps = cap.get(cv2.CAP_PROP_FPS) or 0.0

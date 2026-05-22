@@ -1,16 +1,13 @@
 from pathlib import Path
 
-from src.sfm.self_sfm import run_self_sfm
+from src.sfm.colmap_runner import run_colmap
 
 
 def main() -> None:
-    run_self_sfm(
+    run_colmap(
         frames_dir=Path("data/frames"),
         masks_dir=Path("data/masks"),
-        output_dir=Path("data/colmap_self"),
-        step=1,
-        min_matches=80,
-        min_inliers=20,
+        output_dir=Path("data/colmap"),
     )
 
 

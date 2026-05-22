@@ -1,5 +1,10 @@
 from argparse import ArgumentParser
 from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from src.recon.three_dgs_followup import run_3dgs_followup
 from src.utils.logging_utils import configure_logging
@@ -8,6 +13,7 @@ from src.utils.logging_utils import configure_logging
 def build_argparser() -> ArgumentParser:
     parser = ArgumentParser(description="Run 3DGS followup from SfM/COLMAP outputs.")
     parser.add_argument("--frames", type=Path, default=Path("data/frames"), help="Input frames directory")
+    parser.add_argument("--masks", type=Path, default=Path("data/masks"), help="Foreground mask directory")
     parser.add_argument("--colmap", type=Path, default=Path("data/colmap"), help="COLMAP/SfM output directory")
     parser.add_argument(
         "--gs-repo",
@@ -29,6 +35,13 @@ def build_argparser() -> ArgumentParser:
     )
     parser.add_argument("--iterations", type=int, default=30000, help="3DGS train iterations")
     parser.add_argument("--python-exe", type=str, default="python", help="Python executable for 3DGS train.py")
+    parser.add_argument(
+        "--no-strict-mask-training",
+        action="store_false",
+        dest="strict_mask_training",
+        help="Do not apply strict foreground masks to undistorted training images",
+    )
+    parser.set_defaults(strict_mask_training=True)
     parser.add_argument("--log-level", type=str, default="INFO", help="Logging level")
     return parser
 
@@ -39,12 +52,14 @@ def main() -> None:
 
     run_3dgs_followup(
         frames_dir=args.frames,
+        masks_dir=args.masks,
         colmap_dir=args.colmap,
         gs_repo_dir=args.gs_repo,
         scene_dir=args.scene_dir,
         model_dir=args.model_dir,
         iterations=args.iterations,
         python_exe=args.python_exe,
+        strict_mask_training=args.strict_mask_training,
     )
 
 
